@@ -1,0 +1,43 @@
+# Copyright (c) 2021 Arm Limited
+# SPDX-License-Identifier: Apache-2.0
+
+name: PR Check [ ci-test-env ]
+
+on:
+  pull_request:
+    branches: [ master ]
+
+env:
+  DOCKER_NAME: ci-test-env
+
+jobs:
+
+  TAG_lavacli:
+    runs-on: ubuntu-20.04
+    env:
+      TAG_NAME: lavacli
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build Docker image ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+      run: docker build ${{env.DOCKER_NAME}}/${{env.TAG_NAME}}/ --tag ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+    - name: Show tools installed
+      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} cat env_settings
+    - name: Test Docker image
+      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} ./env_test.sh
+
+  TAG_greentea:
+    runs-on: ubuntu-20.04
+    env:
+      TAG_NAME: greentea
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build Docker image ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+      run: docker build ${{env.DOCKER_NAME}}/${{env.TAG_NAME}}/ --tag ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+    - name: Show tools installed
+      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} cat env_settings
+    - name: Test Docker image
+      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} ./env_test.sh
+
+

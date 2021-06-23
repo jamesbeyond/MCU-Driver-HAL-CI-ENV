@@ -1,0 +1,44 @@
+# Copyright (c) 2021 Arm Limited
+# SPDX-License-Identifier: Apache-2.0
+
+name: Active Update Push [ ci-test-env ]
+
+on:
+  # This workflow only runs when triggered by a push event
+  push:
+    # Only runs when take push events on master branch
+    branches: [ master ]
+    # Only runs take push changes Dockerfile inside ci-test-env folder
+    paths:
+      - 'ci-test-env/*/Dockerfile'
+
+env:
+  DOCKER_NAME: ci-test-env
+
+jobs:
+
+  TAG_lavacli:
+    runs-on: ubuntu-20.04
+    env:
+      TAG_NAME: lavacli
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build image ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+      run: docker build ${{env.DOCKER_NAME}}/${{env.TAG_NAME}}/ --tag ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+    - name: Push image tag <${{env.TAG_NAME}}> to remote
+      run: echo TBD Implement push function for ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+
+  TAG_greentea:
+    runs-on: ubuntu-20.04
+    env:
+      TAG_NAME: greentea
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build image ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+      run: docker build ${{env.DOCKER_NAME}}/${{env.TAG_NAME}}/ --tag ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+    - name: Push image tag <${{env.TAG_NAME}}> to remote
+      run: echo TBD Implement push function for ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+
+

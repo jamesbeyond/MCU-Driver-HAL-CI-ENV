@@ -1,0 +1,64 @@
+# Copyright (c) 2021 Arm Limited
+# SPDX-License-Identifier: Apache-2.0
+
+name: Passive Update [ ci-build-env ]
+
+on:
+  schedule:
+    # Triggers This job at every Sunday 9am
+    - cron:  '0 9 * * 6'
+  # Accept manual triggers
+  workflow_dispatch:
+
+env:
+  DOCKER_NAME: ci-build-env
+
+jobs:
+
+  TAG_sanity:
+    runs-on: ubuntu-20.04
+    env:
+      TAG_NAME: sanity
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build Docker image ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+      run: docker build ${{env.DOCKER_NAME}}/${{env.TAG_NAME}}/ --tag ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+    - name: Show tools installed
+      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} cat env_settings
+    - name: Test Docker image
+      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} ./env_test.sh
+    - name: Push image tag <${{env.TAG_NAME}}> to remote
+      run: echo TBD Implement push function for ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+
+  TAG_gcc-arm:
+    runs-on: ubuntu-20.04
+    env:
+      TAG_NAME: gcc-arm
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build Docker image ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+      run: docker build ${{env.DOCKER_NAME}}/${{env.TAG_NAME}}/ --tag ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+    - name: Show tools installed
+      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} cat env_settings
+    - name: Test Docker image
+      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} ./env_test.sh
+    - name: Push image tag <${{env.TAG_NAME}}> to remote
+      run: echo TBD Implement push function for ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+
+  TAG_armc6:
+    runs-on: ubuntu-20.04
+    env:
+      TAG_NAME: armc6
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build Docker image ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+      run: docker build ${{env.DOCKER_NAME}}/${{env.TAG_NAME}}/ --tag ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+    - name: Show tools installed
+      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} cat env_settings
+    - name: Test Docker image
+      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} ./env_test.sh
+    - name: Push image tag <${{env.TAG_NAME}}> to remote
+      run: echo TBD Implement push function for ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
