@@ -7,7 +7,7 @@ on:
   # This workflow only runs when triggered by a push event
   push:
     # Only runs when take push events on master branch
-    branches: [ master ]
+    branches: [ main ]
     # Only runs take push changes Dockerfile inside ci-build-env folder
     paths:
       - 'ci-build-env/*/Dockerfile'
