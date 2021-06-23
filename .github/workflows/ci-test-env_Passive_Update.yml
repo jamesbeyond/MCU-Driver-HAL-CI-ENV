@@ -11,7 +11,8 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKER_NAME: ci-test-env
+  DOCKER_USER: mcudriverhal
+  DOCKER_REPO: ci-test-env
 
 jobs:
 
@@ -22,14 +23,21 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Build Docker image ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
-      run: docker build ${{env.DOCKER_NAME}}/${{env.TAG_NAME}}/ --tag ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+    - name: Build Docker image ${{env.DOCKER_REPO}}:${{env.TAG_NAME}}
+      run: docker build ${{env.DOCKER_REPO}}/${{env.TAG_NAME}}/ --tag ${{env.DOCKER_REPO}}:${{env.TAG_NAME}}
     - name: Show tools installed
-      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} cat env_settings
+      run: docker run --rm ${{env.DOCKER_REPO}}:${{env.TAG_NAME}} cat env_settings
     - name: Test Docker image
-      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} ./env_test.sh
+      run: docker run --rm ${{env.DOCKER_REPO}}:${{env.TAG_NAME}} ./env_test.sh
+    - name: Log in Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: {{env.DOCKER_USER}}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Push image tag <${{env.TAG_NAME}}> to remote
-      run: echo TBD Implement push function for ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+      run: |
+        docker tag ${{env.DOCKER_REPO}}:${{env.TAG_NAME}} {{env.DOCKER_USER}}/${{env.DOCKER_REPO}}:${{env.TAG_NAME}}
+        docker push {{env.DOCKER_USER}}/${{env.DOCKER_REPO}}:${{env.TAG_NAME}}
 
   TAG-greentea:
     runs-on: ubuntu-20.04
@@ -38,13 +46,20 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Build Docker image ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
-      run: docker build ${{env.DOCKER_NAME}}/${{env.TAG_NAME}}/ --tag ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+    - name: Build Docker image ${{env.DOCKER_REPO}}:${{env.TAG_NAME}}
+      run: docker build ${{env.DOCKER_REPO}}/${{env.TAG_NAME}}/ --tag ${{env.DOCKER_REPO}}:${{env.TAG_NAME}}
     - name: Show tools installed
-      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} cat env_settings
+      run: docker run --rm ${{env.DOCKER_REPO}}:${{env.TAG_NAME}} cat env_settings
     - name: Test Docker image
-      run: docker run --rm ${{env.DOCKER_NAME}}:${{env.TAG_NAME}} ./env_test.sh
+      run: docker run --rm ${{env.DOCKER_REPO}}:${{env.TAG_NAME}} ./env_test.sh
+    - name: Log in Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: {{env.DOCKER_USER}}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Push image tag <${{env.TAG_NAME}}> to remote
-      run: echo TBD Implement push function for ${{env.DOCKER_NAME}}:${{env.TAG_NAME}}
+      run: |
+        docker tag ${{env.DOCKER_REPO}}:${{env.TAG_NAME}} {{env.DOCKER_USER}}/${{env.DOCKER_REPO}}:${{env.TAG_NAME}}
+        docker push {{env.DOCKER_USER}}/${{env.DOCKER_REPO}}:${{env.TAG_NAME}}
 
 
