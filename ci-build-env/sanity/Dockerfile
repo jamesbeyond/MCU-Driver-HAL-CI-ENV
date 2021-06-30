@@ -22,6 +22,7 @@ RUN set -x \
       python3-pip \
       clang-format \
       doxygen \
+      cloc \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1 \
@@ -32,6 +33,7 @@ RUN set -x \
 RUN set -x \
     && pip3 install -U \
       awscli \
+      scancode-toolkit \
     && : # last line
 
 
@@ -46,6 +48,8 @@ RUN /bin/bash -c \
     && git --version | tee -a env_settings \
     && clang-format --version | tee -a env_settings \
     && aws --version | tee -a env_settings \
-    && (echo -n 'doxygen' && doxygen --version) | tee -a env_settings \
+    && (echo -n 'doxygen ' && doxygen --version) | tee -a env_settings \
+    && (echo -n 'cloc ' && cloc --version) | tee -a env_settings \
+    && scancode --version | tee -a env_settings \
     && : # LAST LINE"
 COPY env_test.sh ./env_test.sh
